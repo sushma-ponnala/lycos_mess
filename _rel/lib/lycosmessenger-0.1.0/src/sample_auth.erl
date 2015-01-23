@@ -27,14 +27,16 @@ terminate(_Reason, _Req, _State) ->
 %% API
 % welcome(Req, State) ->
 welcome(Req, State) ->
-io:format("Initial Req from the request  is ~p ~n", [Req]),
-io:format("Initial State from the request is ~p ~n", [State]),
-	Req_method = cowboy_req:method(Req),
-	io:format("Req_method is ~p ~n", [Req_method]),
-	Req_Body = cowboy_req:body(Req),
+% io:format("Initial Req from the request  is ~p ~n", [Req]),
+% io:format("Initial State from the request is ~p ~n", [State]),
+	% Req_method = cowboy_req:method(Req),
+	% io:format("Req_method is ~p ~n", [Req_method]),
+	{ok, Req_Body} = cowboy_req:body(Req),
+	% {ok, Req_Body1} = Req_Body,
+
 	io:format("Body is ~p ~n", [Req_Body]),
 	Body = <<"<h1>This is a response for other methods</h1>">>,
-	io:format("Body is  ~p ~n",[Body]),
+	% io:format("Body is  ~p ~n",[Body]),
 	{Body, Req, State}.
      % Req1 = cowboy_http_req:body(Req),
 	% io:format("Request is ~p ~n", [Req1]),
