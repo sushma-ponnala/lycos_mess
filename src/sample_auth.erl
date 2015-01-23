@@ -22,11 +22,22 @@ terminate(_Reason, _Req, _State) ->
 
 %% API
 welcome(Req, State) ->
+	% Result = emysql:execute(hello_pool, <<"select username from users">>),
+	% io:format("~n~p~n", [Result]),
  	{ok, ReqBody, Req2} = cowboy_req:body(Req),
- 	%Req_Body_decoded = jsx:decode(ReqBody),
- 	lager:log(info, [], "Request Body", [ReqBody]),
+ 	Req_Body_decoded = jsx:decode(ReqBody),
+ 	[{<<"title">>,Title},{<<"content">>,Content}] = Req_Body_decoded,
+ 	Title1 = binary_to_list(Title),
+ 	Content1 = binary_to_list(Content),
+
+ 	io:format("Title1 is ~p ~n ", [Title1]),
+ 	io:format("Content1 is ~p ~n", [Content1]),
+ 	io:format("Title is ~p ~n", [Title]),
+ 	io:format("Content is ~p ~n", [Content]),
+
+ 	lager:log(info, [], "Request Body", [Req_Body_decoded]),
 	%io:format("Body is ~p ~n", [Req_Body]),
-	%Res = jsx:encode([{<<"success">>, <<"success">>}]),
+	% Res = jsx:encode([{<<"success">>, <<"success">>}]),
 	Res1 = cowboy_req:set_resp_body(ReqBody, Req2),
 	 % cowboy_req:set_resp_body(ResponseBody, Req3),
 	Res2 = cowboy_req:delete_resp_header(<<"content-type">>, Res1),

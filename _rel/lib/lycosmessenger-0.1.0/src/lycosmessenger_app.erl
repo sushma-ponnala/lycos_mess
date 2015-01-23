@@ -10,6 +10,7 @@
 -import(routing,[routes/0]). 
 
 start(_Type, _Args) ->
+	emysql:add_pool(hello_pool, [{size,1}, {user,"test1"}, {password,"password"}, {database,"tracker"},{encoding,utf8}]),
 	% Dispatch = cowboy_router:compile(routes()),    
 
  %    {ok, _} = cowboy:start_http(http,100, [{port, 10003}],[{env, [{dispatch, Dispatch}]}
