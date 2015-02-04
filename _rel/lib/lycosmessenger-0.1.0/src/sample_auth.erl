@@ -1,37 +1,31 @@
 -module(sample_auth).
--export([init/3]).
+		-export([init/3]).
 
-% -export([content_types_provided/2]).
-% -export([]).
--export([welcome/2, terminate/3, allowed_methods/2]).
--export([content_types_accepted/2]).
-
-%% Init
-init(_Transport, _Req, []) ->
-	{upgrade, protocol, cowboy_rest}.
-
-%% Callbacks
-allowed_methods(Req, State) ->  
-    {[<<"POST">>], Req, State}.  
-
-content_types_accepted(Req, State) ->
-{[{<<"application/json">>, welcome}], Req, State}.
-
-terminate(_Reason, _Req, _State) ->
-	ok.
-
-%% API
-welcome(Req, State) ->
- 	{ok, ReqBody, Req2} = cowboy_req:body(Req),
- 	%Req_Body_decoded = jsx:decode(ReqBody),
- 	lager:log(info, [], "Request Body", [ReqBody]),
-	%io:format("Body is ~p ~n", [Req_Body]),
-	%Res = jsx:encode([{<<"success">>, <<"success">>}]),
-	Res1 = cowboy_req:set_resp_body(ReqBody, Req2),
-	 % cowboy_req:set_resp_body(ResponseBody, Req3),
-	Res2 = cowboy_req:delete_resp_header(<<"content-type">>, Res1),
-	Res3 = cowboy_req:set_resp_header(<<"content-type">>, <<"application/json">>, Res2),
-	{true, Res3, State}.
+		-export([welcome/2, terminate/3, allowed_methods/2]).
+		-export([content_types_accepted/2]).
+		init(_Transport, _Req, []) ->
+			{upgrade, protocol, cowboy_rest}.
+		allowed_methods(Req, State) ->  
+		    {[<<"POST">>], Req, State}.  
+		content_types_accepted(Req, State) ->
+		{[{<<"application/json">>, welcome}], Req, State}.
+		terminate(_Reason, _Req, _State) ->
+			ok.
+		welcome(Req, State) ->
+		 	{ok, ReqBody, Req2} = cowboy_req:body(Req),
+		 	Req_Body_decoded = jsx:decode(ReqBody),
+		 	[{<<"title">>,Title},{<<"content">>,Content}] = Req_Body_decoded,
+		 	Title1 = binary_to_list(Title),
+		 	Content1 = binary_to_list(Content),
+		 	io:format("Title1 is ~p ~n ", [Title1]),
+		 	io:format("Content1 is ~p ~n", [Content1]),
+		 	io:format("Title is ~p ~n", [Title]),
+		 	io:format("Content is ~p ~n", [Content]),
+		 	lager:log(info, [], "Request Body", [Req_Body_decoded]),
+			Res1 = cowboy_req:set_resp_body(ReqBody, Req2),
+			Res2 = cowboy_req:delete_resp_header(<<"content-type">>, Res1),
+			Res3 = cowboy_req:set_resp_header(<<"content-type">>, <<"application/json">>, Res2),
+			{true, Res3, State}.
 
 
 
