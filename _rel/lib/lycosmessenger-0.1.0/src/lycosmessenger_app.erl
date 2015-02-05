@@ -10,7 +10,10 @@
 -import(routing,[routes/0]). 
 
 start(_Type, _Args) ->
-	emysql:add_pool(hello_pool, [{size,1}, {user,"test1"}, {password,"password"}, {database,"tracker"},{encoding,utf8}]),
+	% emysql:add_pool(helloz_pool, [{size,1}, {user,"test1"}, {password,"password"}, {database,"tracker"},{encoding,utf8}]),
+	emysql:add_pool(tracker_pool, [{size,1}, {user,"test1"}, {password,"password"}, {database,"tracker"},{encoding,utf8}]),
+	emysql:add_pool(lycos_pool,[{size,1}, {user,"mongooseim"}, {password,"password"}, {database,"lycosapp"},{encoding,utf8}]),
+
 	% Dispatch = cowboy_router:compile(routes()),    
 
  %    {ok, _} = cowboy:start_http(http,100, [{port, 10003}],[{env, [{dispatch, Dispatch}]}
@@ -32,3 +35,7 @@ stop(_State) ->
  % start(_StartType, _StartArgs) ->
 	
  %    contentapi_sup:start_link().
+
+
+	% emysql:add_pool(tracker_pool, [{size,1}, {user,"test1"}, {password,"password"}, {database,"tracker"},{encoding,utf8}]),
+	% % emysql:add_pool(lycos_pool,[{size,1}, {user,"mongooseim"}, {password,"mongooseim"}, {database,"mongooseim"},{encoding,utf8}]),

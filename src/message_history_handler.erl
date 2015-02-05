@@ -1,4 +1,4 @@
--module(sample_auth).
+-module(message_history_handler).
 		-export([init/3]).
 
 		-export([welcome/2, terminate/3, allowed_methods/2]).
@@ -12,16 +12,17 @@
 		terminate(_Reason, _Req, _State) ->
 			ok.
 		welcome(Req, State) ->
+		io:format("from message_history_handler"),
 		 	{ok, ReqBody, Req2} = cowboy_req:body(Req),
-		 	Req_Body_decoded = jsx:decode(ReqBody),
-		 	[{<<"title">>,Title},{<<"content">>,Content}] = Req_Body_decoded,
-		 	Title1 = binary_to_list(Title),
-		 	Content1 = binary_to_list(Content),
-		 	io:format("Title1 is ~p ~n ", [Title1]),
-		 	io:format("Content1 is ~p ~n", [Content1]),
-		 	io:format("Title is ~p ~n", [Title]),
-		 	io:format("Content is ~p ~n", [Content]),
-		 	lager:log(info, [], "Request Body", [Req_Body_decoded]),
+		 	% Req_Body_decoded = jsx:decode(ReqBody),
+		 	% [{<<"title">>,Title},{<<"content">>,Content}] = Req_Body_decoded,
+		 	% Title1 = binary_to_list(Title),
+		 	% Content1 = binary_to_list(Content),
+		 	% io:format("Title1 is ~p ~n ", [Title1]),
+		 	% io:format("Content1 is ~p ~n", [Content1]),
+		 	% io:format("Title is ~p ~n", [Title]),
+		 	% io:format("Content is ~p ~n", [Content]),
+		 	% lager:log(info, [], "Request Body", [Req_Body_decoded]),
 			Res1 = cowboy_req:set_resp_body(ReqBody, Req2),
 			Res2 = cowboy_req:delete_resp_header(<<"content-type">>, Res1),
 			Res3 = cowboy_req:set_resp_header(<<"content-type">>, <<"application/json">>, Res2),

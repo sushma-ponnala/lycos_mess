@@ -1,4 +1,4 @@
--module(sample_auth).
+-module(checkphone_handler).
 		-export([init/3]).
 
 		-export([welcome/2, terminate/3, allowed_methods/2]).
@@ -12,16 +12,29 @@
 		terminate(_Reason, _Req, _State) ->
 			ok.
 		welcome(Req, State) ->
-		 	{ok, ReqBody, Req2} = cowboy_req:body(Req),
+		io:format(" from checkphone_handler"),
+		 	{ok, ReqBody, Req2} = cowboy_req:body(Req), 	
 		 	Req_Body_decoded = jsx:decode(ReqBody),
-		 	[{<<"title">>,Title},{<<"content">>,Content}] = Req_Body_decoded,
-		 	Title1 = binary_to_list(Title),
-		 	Content1 = binary_to_list(Content),
-		 	io:format("Title1 is ~p ~n ", [Title1]),
-		 	io:format("Content1 is ~p ~n", [Content1]),
-		 	io:format("Title is ~p ~n", [Title]),
-		 	io:format("Content is ~p ~n", [Content]),
-		 	lager:log(info, [], "Request Body", [Req_Body_decoded]),
+		 	[{<<"userName">>,UserName},{<<"phone">>,Phone}] = Req_Body_decoded,
+		 	UserName1 = binary_to_list(UserName),
+		 	io:format("UserName1 ~p ~n", [UserName1]),
+		 	Phone1 = binary_to_list(Phone),
+		 	io:format("Phone1 ~p ~n", [Phone1]),
+		 	emysql:prepare(my_st, << "select * from lycusers where username = ? AND phone = ?">>),
+		 	Result = emysql:execute(lycos_pool, my_st, [UserName1, Phone1]),
+			io:format("Result is ~p ~n", [Result]),
+			% {Status1, Size1, Data1, Response1, Data1, Angle12} = Result,
+			% io:format("Response is ~p ~n", [Angle12]),
+			% io:format("Response is ~p ~n", [Response1]),
+			% io:format("Response is ~p ~n", [Response1]),
+			% io:format("Size is ~p ~n", [Size1]),
+			% io:format("Status is ~p ~n", [Status1]),
+			Result12 = emysql:execute(lycos_pool, <<"select * from lycusers limit 1">>),
+			io:format("Result12 is ~p ~n", [Result12]),
+
+
+
+
 			Res1 = cowboy_req:set_resp_body(ReqBody, Req2),
 			Res2 = cowboy_req:delete_resp_header(<<"content-type">>, Res1),
 			Res3 = cowboy_req:set_resp_header(<<"content-type">>, <<"application/json">>, Res2),
