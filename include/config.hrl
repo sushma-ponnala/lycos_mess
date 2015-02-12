@@ -8,3 +8,12 @@
 
 
 -define(COUCHDB_ROOT, "http://localhost:5984/").
+
+-define(Usr1, "root").
+-define(Pass1, "password").
+-define(Db1, "lycosapp").
+
+-define(Usr2, "test1").
+-define(Pass2, "password").
+-define(Db2, "tracker").
+

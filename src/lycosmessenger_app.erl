@@ -11,8 +11,8 @@
 
 start(_Type, _Args) ->
 	% emysql:add_pool(helloz_pool, [{size,1}, {user,"test1"}, {password,"password"}, {database,"tracker"},{encoding,utf8}]),
-	emysql:add_pool(tracker_pool, [{size,1}, {user,"test1"}, {password,"password"}, {database,"tracker"},{encoding,utf8}]),
-	emysql:add_pool(lycos_pool,[{size,1}, {user,"mongooseim"}, {password,"password"}, {database,"lycosapp"},{encoding,utf8}]),
+	emysql:add_pool(tracker_pool, [{size,1}, {user,?Usr2}, {password,?Pass2}, {database,?Db2},{encoding,utf8}]),
+	emysql:add_pool(lycos_pool,[{size,1}, {user,?Usr1}, {password,?Pass1}, {database,?Db1},{encoding,utf8}]),
 
 	% Dispatch = cowboy_router:compile(routes()),    
 
