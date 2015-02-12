@@ -1,23 +1,33 @@
 -module(checkphone_handler).
+
 -export([init/3]).
 
 -export([welcome/2, terminate/3, allowed_methods/2]).
+
 -export([content_types_accepted/2]).
+
 init(_Transport, _Req, []) ->
 	{upgrade, protocol, cowboy_rest}.
+
 allowed_methods(Req, State) ->  
     {[<<"POST">>], Req, State}.  
+
 content_types_accepted(Req, State) ->
 {[{<<"application/json">>, welcome}], Req, State}.
+
 terminate(_Reason, _Req, _State) ->
 	ok.
+
 welcome(Req, State) ->
  	{ok, _ReqBody, Req2} = cowboy_req:body(Req), 
- 	
-
  	lager:log(info, [], " Req2 ~p ~n", [Req2]),
+
+
  	Req_Body_decoded = jsx:decode(_ReqBody),
+ 	io:format("Req_Body_decoded is ~p ~n ", [Req_Body_decoded]),
  	[{<<"userName">>,UserName},{<<"phone">>,Phone}] = Req_Body_decoded,
+
+ 	
  	UserName1 = binary_to_list(UserName),lager:log(info, [], " UserName1 ~p ~n", [UserName1]),
  	Phone1 = binary_to_list(Phone),
  	emysql:prepare(my_st, << "select * from lycusers where phone = ?">>),

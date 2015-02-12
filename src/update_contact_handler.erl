@@ -1,32 +1,45 @@
 -module(update_contact_handler).
-		-export([init/3]).
+-export([init/3]).
 
-		-export([welcome/2, terminate/3, allowed_methods/2]).
-		-export([content_types_accepted/2]).
-		init(_Transport, _Req, []) ->
-			{upgrade, protocol, cowboy_rest}.
-		allowed_methods(Req, State) ->  
-		    {[<<"POST">>], Req, State}.  
-		content_types_accepted(Req, State) ->
-		{[{<<"application/json">>, welcome}], Req, State}.
-		terminate(_Reason, _Req, _State) ->
-			ok.
-		welcome(Req, State) ->
-		io:format("from update_contact_handler"),
-		 	{ok, ReqBody, Req2} = cowboy_req:body(Req),
-		 	% Req_Body_decoded = jsx:decode(ReqBody),
-		 	% [{<<"title">>,Title},{<<"content">>,Content}] = Req_Body_decoded,
-		 	% Title1 = binary_to_list(Title),
-		 	% Content1 = binary_to_list(Content),
-		 	% io:format("Title1 is ~p ~n ", [Title1]),
-		 	% io:format("Content1 is ~p ~n", [Content1]),
-		 	% io:format("Title is ~p ~n", [Title]),
-		 	% io:format("Content is ~p ~n", [Content]),
-		 	% lager:log(info, [], "Request Body", [Req_Body_decoded]),
-			Res1 = cowboy_req:set_resp_body(ReqBody, Req2),
-			Res2 = cowboy_req:delete_resp_header(<<"content-type">>, Res1),
-			Res3 = cowboy_req:set_resp_header(<<"content-type">>, <<"application/json">>, Res2),
-			{true, Res3, State}.
+-export([welcome/2, terminate/3, allowed_methods/2]).
+-export([content_types_accepted/2]).
+init(_Transport, _Req, []) ->
+	{upgrade, protocol, cowboy_rest}.
+allowed_methods(Req, State) ->  
+    {[<<"POST">>], Req, State}.  
+content_types_accepted(Req, State) ->
+{[{<<"application/json">>, welcome}], Req, State}.
+terminate(_Reason, _Req, _State) ->
+	ok.
+welcome(Req, State) ->
+io:format("from update_contact_handler ~n"),
+ 	{ok, ReqBody, Req2} = cowboy_req:body(Req),
+ 	Req_Body_decoded = jsx:decode(ReqBody),
+ 	lager:log(info, [], " Req_Body_decoded ~p ~n", [Req_Body_decoded]),
+
+ 	[{<<"userName">>,UserName},{<<"userStatus">>,UserStatus},{<<"contactName">>,ContactName},{<<"contactStatus">>,ContactStatus}] = Req_Body_decoded,
+ 	io:format(" UserName is ~p ~n", [UserName]),
+ 	io:format(" UserStatus is ~p ~n", [UserStatus]),
+ 	io:format(" ContactName is ~p ~n", [ContactName]),
+ 	io:format(" ContactName is ~p ~n", [ContactStatus]),
+ 	emysql:prepare(my_st, << "select ID from lycusers where USERNAME = ?">>),
+ 	Result = emysql:execute(lycos_pool, my_st, [UserName]),
+ 	Result_list = emysql:as_proplist(Result),
+ 	[[{<<"ID">>,User_Id}]] = Result_list,
+ 	io:format("Sql_result is ~p ~n", [User_Id]),
+ 	% Req_Body_decoded = jsx:decode(ReqBody),
+ 	% [{<<"title">>,Title},{<<"content">>,Content}] = Req_Body_decoded,
+ 	% Title1 = binary_to_list(Title),
+ 	% Content1 = binary_to_list(Content),
+ 	% io:format("Title1 is ~p ~n ", [Title1]),
+ 	% io:format("Content1 is ~p ~n", [Content1]),
+ 	% io:format("Title is ~p ~n", [Title]),
+ 	% io:format("Content is ~p ~n", [Content]),
+ 	% lager:log(info, [], "Request Body", [Req_Body_decoded]),
+	Res1 = cowboy_req:set_resp_body(ReqBody, Req2),
+	Res2 = cowboy_req:delete_resp_header(<<"content-type">>, Res1),
+	Res3 = cowboy_req:set_resp_header(<<"content-type">>, <<"application/json">>, Res2),
+	{true, Res3, State}.
 
 
 
